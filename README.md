@@ -1,4 +1,4 @@
-# SSA SCV Tutorial: Creating data plots for effective decision-making using statistical inference with R 
+# WOMBAT 2024 Tutorial: Creating data plots for effective decision-making using statistical inference with R 
 
 <img src="wombat-2024.png" align="right" width="150" />
 
