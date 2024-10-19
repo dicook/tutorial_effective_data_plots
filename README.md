@@ -43,10 +43,10 @@ Background: Participants should have a good working knowledge of R, and tidy ver
 
 ## Getting started
 
-1. You should have a reasonably up to date version of R and R Studio, eg RStudio RStudio 2023.06.2 +561 and R version 4.3.1 (2023-06-16). Install the following packages, and their dependencies.
+1. You should have a reasonably up to date version of R and R Studio, eg RStudio 2024.09.0 +375 and R version 4.4.1 (2024-06-14). Install the following packages, and their dependencies.
 
 ```
-install.packages(c("ggplot2", "tidyr", "dplyr", "readr", "stringr", "nullabor", "colorspace", "palmerpenguins", "broom", "ggbeeswarm"), dependencies=c("Depends", "Imports"))
+install.packages(c("ggplot2", "tidyr", "dplyr", "readr", "stringr", "nullabor", "colorspace", "palmerpenguins", "broom", "ggbeeswarm", "vcd", "MASS", "conflicted"), dependencies=c("Depends", "Imports"))
 ```
 
 2. Download the [Zip file of materials](https://dicook.org/tutorial_effective_data_plots/tutorial.zip) to your laptop, and unzip it. 
