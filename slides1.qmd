@@ -11,7 +11,7 @@ format:
 code-line-numbers: false
 message: false
 highlight-style: pygments
-footer: "[https://dicook.org/tutorial_effective_data_plots](https://dicook.org/tutorial_effective_data_plots)"
+footer: "[https://dicook.github.io/tutorial_effective_data_plots/](https://dicook.github.io/tutorial_effective_data_plots/)"
 ---
 
 ```{r, include = FALSE}
