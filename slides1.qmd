@@ -1353,6 +1353,7 @@ This data is downloaded from [ABS Census Datapacks](https://www.abs.gov.au/censu
 
 ::: {.column width=50%}
 ```{r}
+#| label: exercise1
 #| eval: false
 #| echo: true
 file = "data/2021Census_G33_VIC_LGA.csv"
@@ -1377,6 +1378,7 @@ ggplot(hh_income) +
 ::: {.f70}
 
 ```{r}
+#| label: exercise1-solution
 #| message: false
 #| code-fold: true
 #| code-summary: "Code for answer"

@@ -820,7 +820,7 @@ Dianne Cook <br> Monash University
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(wasps)</span>
 <span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">258</span>)</span>
 <span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>wasps_l <span class="ot">&lt;-</span> <span class="fu">lineup</span>(<span class="fu">null_permute</span>(<span class="st">"Group"</span>), wasps[,<span class="sc">-</span><span class="dv">1</span>], <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>wasps_l <span class="ot">&lt;-</span> wasps_l <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="" aria-hidden="true" tabindex="-1"></a>wasps_l <span class="ot">&lt;-</span> wasps_l <span class="sc">|&gt;</span></span>
 <span id="cb13-5"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">LD1 =</span> <span class="cn">NA</span>, <span class="at">LD2 =</span> <span class="cn">NA</span>)</span>
 <span id="cb13-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(wasps_l<span class="sc">$</span>.sample)) {</span>
 <span id="cb13-7"><a href="" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">filter</span>(wasps_l, .sample <span class="sc">==</span> i)</span>
@@ -1044,11 +1044,11 @@ Dianne Cook <br> Monash University
 <div class="fragment">
 <p>Generate the lineup with:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="" aria-hidden="true" tabindex="-1"></a>b_aus_sa <span class="sc">%&gt;%</span> </span>
-<span id="cb25-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">uncount</span>(count) <span class="sc">%&gt;%</span></span>
-<span id="cb25-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">%&gt;%</span></span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="" aria-hidden="true" tabindex="-1"></a>b_aus_sa <span class="sc">|&gt;</span> </span>
+<span id="cb25-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">uncount</span>(count) <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(age) <span class="sc">|&gt;</span></span>
 <span id="cb25-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sex =</span> <span class="fu">sample</span>(sex, </span>
-<span id="cb25-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb25-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sex, age, year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
@@ -1203,21 +1203,6 @@ Dianne Cook <br> Monash University
 <li>strength of the signal in one type of display relative to another</li>
 </ul></li>
 </ul>
-</section>
-<section id="why" class="slide level2">
-<h2>Why</h2>
-<div class="columns">
-<div class="column" style="width:70%;">
-<p><img data-src="images/expertise.png"></p>
-</div><div class="column" style="width:30%;">
-<div class="f80">
-<p>Do you see any clusters here?</p>
-<div class="fragment">
-<p><br><br> My colleague does, but I don’t.</p>
-</div>
-</div>
-</div>
-</div>
 </section>
 <section id="wrap-up" class="slide level2 center">
 <h2>Wrap up</h2>

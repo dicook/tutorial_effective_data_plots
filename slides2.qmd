@@ -23,6 +23,16 @@ library(broom)
 library(palmerpenguins)
 library(nullabor)
 library(dslabs) # For stars data
+library(vcd)
+library(MASS)
+library(colorspace)
+library(conflicted)
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::slice)
+conflicts_prefer(dplyr::rename)
+conflicts_prefer(dplyr::mutate)
+conflicts_prefer(dplyr::summarise)
 ```
 
 ```{r, include = FALSE}
@@ -259,7 +269,7 @@ There a difference between the groups
 ::: {.hidden}
 
 ```{r}
-ebs <- read_csv("data/EBS_faculty_keywords.csv") %>%
+ebs <- read_csv("data/EBS_faculty_keywords.csv") |>
   mutate(id = 1:n())
 
 theory_stem <- c("infer", "tsa", "statist", "theory", "theori", "bayesian", "infer", "robust", "highdimension", "estim", "nonlinear", "depend", "probabilist", "memori", "risk", "oper", "constrain", "stochast", "minimum", "distanc", "nonparametr", "econometr", "simul", "semiparametr", "mathemat", "actuari","optimisationoper", "test","extrem","causal", "multivari", "econometr", "actuari","cross","section","quantit","uncertainti")
@@ -645,7 +655,7 @@ This means we would reject $H_o$ and conclude that there is a difference in the 
 data(wasps)
 set.seed(258)
 wasps_l <- lineup(null_permute("Group"), wasps[,-1], n=15)
-wasps_l <- wasps_l %>%
+wasps_l <- wasps_l |>
   mutate(LD1 = NA, LD2 = NA)
 for (i in unique(wasps_l$.sample)) {
   x <- filter(wasps_l, .sample == i)
@@ -886,23 +896,23 @@ pvisual(n=??, k=??, m=15)
 
 ```{r}
 tb <- read_csv(here::here("data/TB_notifications_2023-08-21.csv"))
-tb_aus <- tb %>%
-  filter(iso3 == "AUS") %>%
+tb_aus <- tb |>
+  filter(iso3 == "AUS") |>
   filter(year > 1996)
-tb_aus_sa <- tb_aus %>%
-  filter(year > 2012) %>%
+tb_aus_sa <- tb_aus |>
+  filter(year > 2012) |>
   select(iso3, year, 
          newrel_f014:newrel_f65, 
-         newrel_m014:newrel_m65) %>%
+         newrel_m014:newrel_m65) |>
   pivot_longer(cols=newrel_f014:newrel_m65,
                names_to = "sex_age", 
-               values_to = "count") %>%
-  filter(!is.na(count)) %>%
+               values_to = "count") |>
+  filter(!is.na(count)) |>
   separate(sex_age, into=c("stuff", 
-                           "sex_age")) %>%
+                           "sex_age")) |>
   mutate(sex = str_sub(sex_age, 1, 1),
          age = str_sub(sex_age, 2, 
-                       str_length(sex_age))) %>%
+                       str_length(sex_age))) |>
   mutate(age = case_when(
     age == "014" ~ "0-14",
     age == "1524" ~ "15-24",
@@ -910,7 +920,7 @@ tb_aus_sa <- tb_aus %>%
     age == "3544" ~ "35-44",
     age == "4554" ~ "45-54",
     age == "5564" ~ "55-64",
-    age == "65" ~ "65")) %>%
+    age == "65" ~ "65")) |>
   select(iso3, year, sex, age, count)
 ```
 
@@ -931,11 +941,11 @@ l1 <- ggplot(tb_aus_sa,
         axis.text = element_blank()) +
   ggtitle("sample 1")
 set.seed(446)
-l2 <- tb_aus_sa %>% 
-  uncount(count) %>%
-  group_by(age) %>%
-  mutate(sex = sample(sex, replace = FALSE)) %>%
-  count(sex, age, year) %>%
+l2 <- tb_aus_sa |> 
+  uncount(count) |>
+  group_by(age) |>
+  mutate(sex = sample(sex, replace = FALSE)) |>
+  count(sex, age, year) |>
   ggplot(aes(x=year, 
              y=n, 
              fill=sex)) + 
@@ -946,11 +956,11 @@ l2 <- tb_aus_sa %>%
         axis.title = element_blank(),
         axis.text = element_blank()) +
   ggtitle("sample 2")
-l3 <- tb_aus_sa %>% 
-  uncount(count) %>%
-  group_by(age) %>%
-  mutate(sex = sample(sex, replace = FALSE)) %>%
-  count(sex, age, year) %>%
+l3 <- tb_aus_sa |> 
+  uncount(count) |>
+  group_by(age) |>
+  mutate(sex = sample(sex, replace = FALSE)) |>
+  count(sex, age, year) |>
   ggplot(aes(x=year, 
              y=n, 
              fill=sex)) + 
@@ -1003,11 +1013,11 @@ Generate the lineup with:
 ```{r}
 #| eval: false
 #| echo: true
-b_aus_sa %>% 
-  uncount(count) %>%
-  group_by(age) %>%
+b_aus_sa |> 
+  uncount(count) |>
+  group_by(age) |>
   mutate(sex = sample(sex, 
-    replace = FALSE)) %>%
+    replace = FALSE)) |>
   count(sex, age, year)
 ```
 
@@ -1135,8 +1145,8 @@ This is the pair of plot designs we are evaluating.
 #| fig-width: 6
 #| fig-align: center
 #| out-width: 60%
-tb_aus <- tb %>%
-  filter(iso3 == "AUS") %>%
+tb_aus <- tb |>
+  filter(iso3 == "AUS") |>
   filter(year > 1996)
 p1 <- ggplot(tb_aus, aes(x=year, y=c_newinc)) + 
   geom_point() +
@@ -1183,7 +1193,7 @@ No peeking!
 library(StatsBombR)
 library(SBpitch)
 load("data/aus_brazil.rda")
-passes = aus_brazil %>%
+passes = aus_brazil |>
   filter(type.name=="Pass" & is.na(pass.outcome.name))
 #create_Pitch() +  
 set.seed(622)
@@ -1222,7 +1232,7 @@ ggplot(data=lineup(null_permute("possession_team.name"),
 library(StatsBombR)
 library(SBpitch)
 load("data/aus_brazil.rda")
-passes = aus_brazil %>%
+passes = aus_brazil |>
   filter(type.name=="Pass" & is.na(pass.outcome.name))
 #create_Pitch() +  
 set.seed(622)
@@ -1349,27 +1359,7 @@ ggplot(lineup(null_dist("temp", "exp",
     - significance of a pattern
     - strength of the signal in one type of display relative to another
 
-## Why
 
-:::: {.columns}
-::: {.column width=70%}
-![](images/expertise.png)
-:::
-
-::: {.column width=30%}
-
-::: {.f80}
-Do you see any clusters here?
-
-::: {.fragment}
-<br><br>
-My colleague does, but I don't.
-:::
-:::
-
-:::
-
-::::
 ## Wrap up {.center}
 
 ## References

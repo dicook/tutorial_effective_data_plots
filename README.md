@@ -19,7 +19,7 @@ This is for statisticians and data science practitioners who are interested in i
     - Creating null samples to build lineups for comparison and testing.
     - Conducting a lineup test using your friends to determine whether what you see is real or spurious, and to determine the best design for your plot.
 
-Background: Participants should have a good working knowledge of R, and tidy verse, and some experience with ggplot2. Familiarity with the material in R4DS (https://r4ds.hadley.nz) is helpful.
+Background: Participants should have a good working knowledge of R, and tidy verse, and some experience with ggplot2. Familiarity with the material in [R4DS](https://r4ds.hadley.nz) is helpful.
 
 ## Course Schedule
 
