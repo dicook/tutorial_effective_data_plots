@@ -26,6 +26,9 @@ library(dslabs) # For stars data
 library(vcd)
 library(MASS)
 library(colorspace)
+library(gstat)
+library(sf)
+library(sp)
 library(conflicted)
 conflicts_prefer(dplyr::filter)
 conflicts_prefer(dplyr::select)
@@ -93,7 +96,7 @@ plan <- tribble(~time, ~topic,
 knitr::kable(plan)
 ```
 
-## What is your plot testing? 
+## What is your plot testing? [(1/3)]{.f50}
 
 :::: {.columns}
 
@@ -139,7 +142,7 @@ Is the model misspecified?
 ::::
 
 
-## What is your plot testing? 
+## What is your plot testing? [(1/3)]{.f50}
 
 :::: {.columns}
 
@@ -177,7 +180,7 @@ What do you see?
 ::::
 
 
-## What is your plot testing? 
+## What is your plot testing? [(2/3)]{.f50}
 
 :::: {.columns}
 
@@ -218,7 +221,7 @@ Is there a difference between the groups?
 
 ::::
 
-## What is your plot testing? 
+## What is your plot testing? [(2/3)]{.f50}
 
 :::: {.columns}
 
@@ -266,17 +269,113 @@ There a difference between the groups
 
 ::::
 
-::: {.hidden}
+
+
+## What is your plot testing? [(3/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
 
 ```{r}
-ebs <- read_csv("data/EBS_faculty_keywords.csv") |>
-  mutate(id = 1:n())
-
-theory_stem <- c("infer", "tsa", "statist", "theory", "theori", "bayesian", "infer", "robust", "highdimension", "estim", "nonlinear", "depend", "probabilist", "memori", "risk", "oper", "constrain", "stochast", "minimum", "distanc", "nonparametr", "econometr", "simul", "semiparametr", "mathemat", "actuari","optimisationoper", "test","extrem","causal", "multivari", "econometr", "actuari","cross","section","quantit","uncertainti")
-
+#| echo: false
+library(GGally)
+library(ggthemes)
+data(nasa)
+sth_america <- map_data("world") |>
+  filter(between(long, -115, -53), between(lat, -20.5, 41))
+nasa_jan_98 <- nasa |> 
+  filter(month == 1, year == 1998) |>
+  select(id, lat, long, surftemp)
 ```
 
+```{r}
+#| eval: false
+#| echo: true
+ggplot() + 
+  geom_tile(DATA, 
+    aes(x=LONGITUDE, 
+        y=LATITUDE, 
+        fill=VAR1)) +
+  geom_path(MAP, 
+        aes(x=LONGITUDE, 
+            y=LATITUDE,
+            group=GROUP)) +
+  theme_map() 
+```
+
+<br>
+What will we  be assessing using this plot?
+
 :::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+::: {.fragment}
+<br>
+Is there a spatial trend?
+
+<br>
+Are there any spatial anomalies?
+
+:::
+
+:::
+
+::::
+
+## What is your plot testing? [(3/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6.5
+#| echo: false
+ggplot() + 
+  geom_tile(data=nasa_jan_98, 
+    aes(x=long, y=lat, fill=surftemp)) +
+  geom_path(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            colour="white", linewidth=1) +
+  scale_fill_viridis_c("", option = "magma") +
+  ggtitle("January 1998") +
+  theme_map() +
+  theme(legend.position = "bottom", 
+        plot.title = element_text(size = 24)) 
+```
+
+<br>
+
+:::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+What do you see?
+
+::: {.fragment}
+There are clusters of high and low temperature in different parts of the region.
+
+&check; clusters <br>
+&check; outliers/anomalies
+:::
+
+::: {.fragment}
+<br>
+<span style="color: #F5191C;"> Are you sure? </span>
+:::
+:::
+
+::::
+
 
 ## Statistical thinking
 
@@ -1082,15 +1181,45 @@ or your own.
 
 No peeking!
 
-## Plot design example 1A
+##
 
 :::: {.columns}
 
-::: {.column width=15%}
-<br><br>Which plot is the most different?
+::: {.column style="width: 15%; font-size: 70%;"}
+<br><br><br> Which plot is the most different?
+<br><br> *Raise your hand when you have chosen.*
+
+```{r}
+countdown::countdown(0, 20, left=0, top=0.5, font_size = "2rem")
+```
 :::
 
 ::: {.column width=85%}
+
+::: {.panel-tabset}
+
+## Blank
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 80%
+ggplot(lineup(null_permute('mpg'), mtcars, n=12), aes(x=19.2, y=3.325)) +
+  geom_text(aes(label = .sample), size=5) +
+  theme_void() +
+  facet_wrap(~.sample, ncol=4) +
+  theme( 
+        panel.background =
+         element_rect(fill='transparent', 
+         color = "black"), 
+        panel.border =
+         element_rect(fill='transparent', 
+         color = "black"))
+```
+
+## Plot design 1A
+
 
 ```{r}
 #| fig-width: 8
@@ -1105,19 +1234,8 @@ ggplot(lineup(null_permute("year"), tb_aus, n=15),
   theme(axis.title = element_blank(),
         axis.text = element_blank())
 ```
-:::
 
-::::
-
-## Plot design example 1B
-
-:::: {.columns}
-
-::: {.column width=15%}
-<br><br>Which plot is the most different?
-:::
-
-::: {.column width=85%}
+## Plot design 1B
 
 ```{r}
 #| fig-width: 8
@@ -1131,6 +1249,9 @@ ggplot(lineup(null_permute("year"), tb_aus, n=15),
   theme(axis.title = element_blank(),
         axis.text = element_blank())
 ```
+
+:::
+
 :::
 
 ::::
@@ -1176,79 +1297,167 @@ Compute signal strength:
 
 No peeking!
 
-## Plot design example 2A
+
+##
 
 :::: {.columns}
 
-::: {.column width=15%}
-<br><br>Which plot is the most different?
+::: {.column style="width: 15%; font-size: 70%;"}
+<br><br><br> Which plot is the most different?
+<br><br> *Raise your hand when you have chosen.*
+
+```{r}
+countdown::countdown(0, 20, left=0, top=0.5, font_size = "2rem")
+```
 :::
 
 ::: {.column width=85%}
 
+::: {.panel-tabset}
+
+## Blank
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 80%
+ggplot(lineup(null_permute('mpg'), mtcars, n=12), aes(x=19.2, y=3.325)) +
+  geom_text(aes(label = .sample), size=5) +
+  theme_void() +
+  facet_wrap(~.sample, ncol=4) +
+  theme( 
+        panel.background =
+         element_rect(fill='transparent', 
+         color = "black"), 
+        panel.border =
+         element_rect(fill='transparent', 
+         color = "black"))
+```
+
+## Plot design 2A
+
+```{r toy-spatial, out.width = "80%"}
+#| echo: false
+#| results: hide
+# Set up a simple example
+set.seed(945)
+x <- 1:24
+y <- 1:24
+xy <- expand.grid(x, y)
+d <- tibble(x=xy$Var1, y=xy$Var2) |>
+  mutate(v = x+2*y) 
+d_sf <- SpatialPointsDataFrame(d[,1:2],
+                   data.frame(d[,3]))
+vgm_mod <- vgm(psill=5, model = "Sph", range=20, nmax=30)
+d_dummy <- gstat(formula = v~1, dummy=TRUE, beta=0,
+           model=vgm_mod)
+d_err <- predict(d_dummy, d_sf, nsim=1)
+d <- d |>
+  mutate(e = d_err@data$sim1*3) |>
+  mutate(ve = v+e)
+```
+
 ```{r}
 #| eval: false
-#| fig-width: 8
-#| fig-height: 6
-library(StatsBombR)
-library(SBpitch)
-load("data/aus_brazil.rda")
-passes = aus_brazil |>
-  filter(type.name=="Pass" & is.na(pass.outcome.name))
-#create_Pitch() +  
-set.seed(622)
-ggplot(data=lineup(null_permute("possession_team.name"),
-                         passes, n=12), 
-             aes(x=location.x, 
-                 y=location.y,
-                 colour=possession_team.name))  +
-  geom_point(alpha=0.7) +
-  scale_color_discrete_divergingx(palette="Temps", nmax=2, rev=TRUE) + 
-  facet_wrap(~.sample, ncol=4) +
-  coord_equal() +
+#| fig-width: 12
+#| fig-height: 4
+#| out-width: 100%
+obs <- ggplot(d, aes(x, y, fill = ve)) +
+  geom_tile() +
+  scale_fill_viridis_c("") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Observed") +
   theme(legend.position = "none",
-        axis.title = element_blank(),
-        axis.text = element_blank())
+              axis.text = element_blank(),
+              axis.title = element_blank())
+trend <- ggplot(d, aes(x, y, fill = v)) +
+  geom_tile() +
+  scale_fill_viridis_c("", option = "magma") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Trend") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+err <- ggplot(d, aes(x, y, fill = e)) +
+  geom_tile() +
+  scale_fill_distiller("", palette = "PRGn") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Residual") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+obs + trend + err + plot_layout(ncol=3)
+```
+
+
+```{r}
+#| label: gen-nulls
+#| code-fold: true
+#| code-summary: generate-nulls
+#| results: hide
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 100%
+set.seed(953)
+d_null <- predict(d_dummy, d_sf, nsim=11)
+pos <- sample(1:12, 1)
+lineup_plots <- list()
+j <- 1
+for (i in 1:12) {
+  if (pos == i) { # plot data
+    p <- ggplot(d, aes(x, y, fill = scale(ve))) +
+           geom_tile() 
+  } 
+  else { # plot nulls
+    null_df <- tibble(x=d$x, y=d$y, v=d_null@data[,j])
+    p <- ggplot(null_df, aes(x, y, fill = scale(v))) +
+           geom_tile() 
+   j <- j + 1
+  }
+  p <- p +
+        scale_fill_viridis_c("", option = "magma") +
+        theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+    
+  lineup_plots[[paste(i)]] <- p
+}
+wrap_plots(lineup_plots, ncol = 4)
+```
+
+
+## Plot design 2B
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 100%
+lineup_plots <- list()
+j <- 1
+for (i in 1:12) {
+  if (pos == i) { # plot data
+    p <- ggplot(d, aes(x, y, fill = scale(ve))) +
+           geom_tile() 
+  } 
+  else { # plot nulls
+    null_df <- tibble(x=d$x, y=d$y, v=d_null@data[,j])
+    p <- ggplot(null_df, aes(x, y, fill = scale(v))) +
+           geom_tile() 
+   j <- j + 1
+  }
+  p <- p +
+        #scale_fill_viridis_c("", option = "magma") +
+        theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+    
+  lineup_plots[[paste(i)]] <- p
+}
+wrap_plots(lineup_plots, ncol = 4)
 ```
 
 :::
-
-::::
-
-## Plot design example 2B
-
-:::: {.columns}
-
-::: {.column width=15%}
-<br><br>Which plot is the most different?
-:::
-
-::: {.column width=85%}
-
-```{r}
-#| eval: false
-#| fig-width: 8
-#| fig-height: 6
-library(StatsBombR)
-library(SBpitch)
-load("data/aus_brazil.rda")
-passes = aus_brazil |>
-  filter(type.name=="Pass" & is.na(pass.outcome.name))
-#create_Pitch() +  
-set.seed(622)
-ggplot(data=lineup(null_permute("possession_team.name"),
-                         passes, n=12), 
-             aes(x=location.x, 
-                 y=location.y,
-                 colour=possession_team.name))  +
-  geom_density2d(alpha=0.7) +
-  scale_color_discrete_divergingx(palette="Temps", nmax=2, rev=TRUE) + 
-  facet_wrap(~.sample, ncol=4) +
-  coord_equal() +
-  theme(legend.position = "none",
-        axis.title = element_blank(),
-        axis.text = element_blank())
-```
 
 :::
 
@@ -1256,43 +1465,32 @@ ggplot(data=lineup(null_permute("possession_team.name"),
 
 ## Plot design example 2
 
-This is the pair of plot designs we are evaluating. Comparing the positions at which passes were made by both teams.
+This is the pair of plot designs we are evaluating. Comparing colour palettes used for the spatial distribution of temperature.
 
 ```{r}
 #| message: false
 #| warning: false
-#| eval: false
 #| fig-width: 8
 #| fig-height: 3
 #| fig-align: center
 #| out-width: 60%
-p1 <- create_Pitch() + 
-  geom_point(data=passes, 
-             aes(x=location.x, 
-                 y=location.y,
-                 colour=possession_team.name)) +
-  scale_color_discrete_divergingx(palette="Temps", nmax=2, rev=TRUE) + 
-  coord_equal() +
-  theme(legend.title = element_blank(),
-        legend.position = "bottom",
-        legend.direction = "horizontal",
-        legend.text = element_text(size="8"),
-        axis.line.x = element_blank(),
-        axis.line.y = element_blank()) +
+p1 <- ggplot(d, aes(x, y, fill = ve)) +
+  geom_tile() +
+  scale_fill_viridis_c("", option = "magma") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Observed") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank()) +
   ggtitle("Plot A")
-p2 <- create_Pitch() + 
-  geom_density2d(data=passes, 
-             aes(x=location.x, 
-                 y=location.y,
-                 colour=possession_team.name)) +
-  scale_color_discrete_divergingx(palette="Temps", nmax=2, rev=TRUE) + 
-  coord_equal() +
-  theme(legend.title = element_blank(),
-        legend.position = "bottom",
-        legend.direction = "horizontal",
-        legend.text = element_text(size="8"),
-        axis.line.x = element_blank(),
-        axis.line.y = element_blank()) +
+p2 <- ggplot(d, aes(x, y, fill = ve)) +
+  geom_tile() +
+  #scale_fill_viridis_c("") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Observed") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank()) +
   ggtitle("Plot B")
 
 p1 + p2
@@ -1349,6 +1547,14 @@ ggplot(lineup(null_dist("temp", "exp",
         axis.text.y = element_blank())
 ```
 
+## Exercise
+
+Choose one of your own plots, and decide on two choices in the design. Map out:
+
+1. What it is testing
+2. How to generate nulls
+3. Make a lineup with each design
+
 ## Take-aways
 
 - Think about what variability or associations your plot will be assessing
@@ -1362,7 +1568,7 @@ ggplot(lineup(null_dist("temp", "exp",
 
 ## Wrap up {.center}
 
-## References
+## To learn more
 
 ::: {.f60}
 - Wickham, Cook, Hofmann, Buja (2010) Graphical Inference for Infovis, IEEE TVCG, https://doi.org/10.1109/TVCG.2010.161.
