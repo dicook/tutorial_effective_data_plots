@@ -25,10 +25,10 @@ Background: Participants should have a good working knowledge of R, and tidy ver
 
 | time | topic |
 |------|-------|
-|1:00-1:15|	Why, philosophy and benefits|
-|1:15-1:35|	Organising data to map variables to plots|
-|1:35-2:05|	Making a variety of plots|
-|2:05-2:30|	Do but don’t, and cognitive principles|
+|1:30-1:45|	Why, philosophy and benefits|
+|1:45-2:05|	Organising data to map variables to plots|
+|2:05-2:35|	Making a variety of plots|
+|2:35-3:00|	Do but don’t, and cognitive principles|
 |2:30-3:00|	BREAK|
 |3:00-3:20|	What is your plot testing?|
 |3:20-3:35|	Creating null samples|
